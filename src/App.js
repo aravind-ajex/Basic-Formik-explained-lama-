@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import { useFormik } from 'formik';
+import * as YUP from "yup";
 import './App.css';
 
+const validation = YUP.object({
+  name: YUP.string().required("Please enter the name"),
+  password: YUP.string().required("Please enter the password")
+})
+
 function App() {
+  // functional component ---> useFormik
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue, resetForm } = useFormik({
+    initialValues: {
+      name: "",
+      password: ""
+    },
+    validationSchema: validation,
+    onSubmit: (data) => console.log("Final data:", data)
+  });
+  console.log({ values, errors, touched })
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={handleSubmit}>
+        <input
+          name='name'
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder='Enter the Name'
+        />
+        {errors.name && touched.name && <p>{errors.name}</p>}
+        <input
+          name='password'
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder='Enter the Password'
+        />
+        {errors.password && touched.password && <p>{errors.password}</p>}
+
+        <button type='submit' >Save</button>
+        <button type='reset' onClick={()=>{resetForm()}} >Reset</button>
+      </form>
     </div>
   );
 }
